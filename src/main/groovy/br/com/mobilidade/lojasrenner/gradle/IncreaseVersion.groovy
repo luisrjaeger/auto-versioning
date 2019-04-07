@@ -1,16 +1,11 @@
-package com.praqma.demo.greeting
+package br.com.mobilidade.lojasrenner.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 
-/**
- * A custom task type, allows projects to create tasks of type 'GreetingTask'
- * Reference:
- * https://docs.gradle.org/4.6/userguide/more_about_tasks.html#sec:task_input_output_annotations
- */
-class GreetingTask extends DefaultTask {
+class IncreaseVersion extends DefaultTask {
     @Internal
     String message = "Hello"
 
@@ -18,7 +13,7 @@ class GreetingTask extends DefaultTask {
     String target = "World"
 
     @TaskAction
-    void greet() {
+    void increase() {
         if (message.toLowerCase(Locale.ROOT).contains("bye")) {
             throw new GradleException("I can't let you do that, Starfox.")
         }
