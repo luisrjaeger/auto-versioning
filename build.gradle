@@ -1,0 +1,100 @@
+// * * * * * * * * * * * *
+// Plugins
+// * * * * * * * * * * * *
+
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+
+    // Publishing publicly
+    id 'com.gradle.plugin-publish' version '0.9.10'
+
+    // Publishing to Artifactory
+    id 'maven-publish'
+}
+
+// * * * * * * * * * * * *
+// Dependencies
+// * * * * * * * * * * * *
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile     gradleApi()
+    testCompile gradleTestKit()
+    testCompile 'junit:junit:4+'
+}
+
+// * * * * * * * * * * * *
+// Project configuration
+// * * * * * * * * * * * *
+
+project.description     = 'Demo plugin to use as a starting point for custom plugin development'
+project.group           = 'com.praqma'
+project.version         = '1.1.0'
+
+project.ext.name        = 'demo'
+project.ext.pluginId    = 'com.praqma.demo.DemoPlugin'
+project.ext.scm         = 'scm:git@github.com:Praqma/gradle-plugin-bootstrap.git'
+project.ext.url         = 'https://github.com/Praqma/gradle-plugin-bootstrap'
+
+// Configuration for: java-gradle-plugin
+gradlePlugin {
+    plugins {
+        demoPlugin {
+            id = project.pluginId
+            implementationClass = 'com.praqma.demo.DemoPlugin'
+        }
+    }
+}
+
+// * * * * * * * * * * * *
+// Publishing
+// * * * * * * * * * * * *
+
+// Consult the accompanied blog post for information on publishing the plugin.
+// A link can be found in the README file.
+
+// Publishing to plugins.gradle.org
+// --------------------------------
+
+// Configuration for: com.gradle.plugin-publish
+pluginBundle {
+    website = project.url
+    vcsUrl = project.scm
+    tags = ['demo', 'example', 'quickstart']
+
+    plugins {
+        demoPlugin {
+            displayName = 'Demo Custom Gradle Plugin '
+            description = project.description
+            id          = project.pluginId
+        }
+    }
+}
+
+// Publishing to Artifactory
+// -------------------------
+
+// Configures the publication to push, and the repository to push to
+publishing {
+    publications {
+        pluginPublication (MavenPublication) {
+            from        components.java
+            groupId     project.group
+            artifactId  project.name
+            version     project.version
+        }
+    }
+    repositories {
+        maven {
+            url project.rtfUrl
+            credentials {
+                username project.rtfUser
+                password project.rtfSecret
+            }
+        }
+    }
+}
