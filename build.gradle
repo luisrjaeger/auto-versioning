@@ -15,7 +15,7 @@ dependencies {
 
 project.description     = 'Gradle plugin to auto increase Android App version before release'
 project.group           = 'br.com.mobilidade.lojasrenner.gradle'
-project.version         = '1.0.0'
+project.version         = '1.0.1'
 
 project.ext.name        = 'increase-android-version'
 project.ext.pluginId    = 'increase-android-version'

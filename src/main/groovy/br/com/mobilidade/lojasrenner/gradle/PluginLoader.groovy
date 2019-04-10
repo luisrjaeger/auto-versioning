@@ -12,12 +12,27 @@ class PluginLoader {
         Properties versionProps = new Properties()
 
         def versionPropsFile = project.file('version.properties')
-        versionProps.load(new FileInputStream(versionPropsFile))
 
-        extension.major = versionProps['VERSION_NAME_MAJOR'].toInteger()
-        extension.minor = versionProps['VERSION_NAME_MINOR'].toInteger()
-        extension.patch = versionProps['VERSION_NAME_PATCH'].toInteger()
-        extension.code = versionProps['VERSION_CODE'].toInteger()
+        if (versionPropsFile.canRead()) {
+            versionProps.load(new FileInputStream(versionPropsFile))
+
+            extension.major = versionProps['VERSION_NAME_MAJOR'].toInteger()
+            extension.minor = versionProps['VERSION_NAME_MINOR'].toInteger()
+            extension.patch = versionProps['VERSION_NAME_PATCH'].toInteger()
+            extension.code = versionProps['VERSION_CODE'].toInteger()
+        } else {
+            extension.major = 0
+            extension.minor = 0
+            extension.patch = 0
+            extension.code = 0
+
+            versionProps['VERSION_NAME_MAJOR'] = extension.major.toString()
+            versionProps['VERSION_NAME_MINOR'] = extension.minor.toString()
+            versionProps['VERSION_NAME_PATCH'] = extension.patch.toString()
+            versionProps['VERSION_CODE'] = extension.code.toString()
+
+            versionProps.store(versionPropsFile.newWriter(), null)
+        }
 
         project.task('increaseVersion') {
 
@@ -32,8 +47,6 @@ class PluginLoader {
                 println "minor - ${extension.criteriaMinor}"
                 println "patch - ${extension.criteriaPatch}"
 
-                println "RELEASE-NOTES"
-                println extension.releaseNotes
                 println "----------------------"
 
                 println "Increasing Version"
@@ -62,11 +75,15 @@ class PluginLoader {
 
                     def file = new File(fileName)
 
-                    file.text =
-"""
+                    String fileText = """
 # Versão $major.$minor.$patch
-${extension.releaseNotes}
+${new String(extension.releaseNotes.getBytes("UTF-8"), "UTF-8")}
 """
+                    file.withWriter('UTF-8') { writer ->
+                        writer.write(fileText)
+                    }
+
+                    println fileText
                 }
 
                 versionProps['VERSION_NAME_MAJOR'] = major.toString()

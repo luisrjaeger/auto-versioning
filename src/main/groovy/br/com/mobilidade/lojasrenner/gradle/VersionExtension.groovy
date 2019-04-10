@@ -18,6 +18,6 @@ class VersionExtension {
 
     String criteriaMinor = /((.|\n)*)((Nova funcionalidade)|(nova funcionalidade)|(Nova Funcionalidade))((.|\n)*)/
 
-    String criteriaPatch = /((.|\n)*)((Correção)|(Bug)|(correção)|(bug)|(ajuste)|(Ajuste)|(Melhoria)|(melhoria))((.|\n)*)/
+    String criteriaPatch = /((.|\n)*)((Correção)|(Bug)|(BUG)|(correção)|(bug)|(ajuste)|(Ajuste)|(Melhoria)|(melhoria))((.|\n)*)/
 
 }
