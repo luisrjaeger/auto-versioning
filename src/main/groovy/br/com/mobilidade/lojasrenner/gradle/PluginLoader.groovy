@@ -34,6 +34,27 @@ class PluginLoader {
             versionProps.store(versionPropsFile.newWriter(), null)
         }
 
+        project.task('allReleaseVersionProperties') {
+            doLast {
+                println "CURRENT VERSION"
+                println "code                 - ${extension.code}"
+                println "versionName()        - ${extension.versionName()}"
+
+                println "----------------------"
+
+                println "CRITERIAS"
+                println "criteriaMajor        - ${extension.criteriaMajor}"
+                println "criteriaMinor        - ${extension.criteriaMinor}"
+                println "criteriaPatch        - ${extension.criteriaPatch}"
+
+                println "----------------------"
+
+                println "OTHER"
+                println "releaseNotesFileName - ${extension.releaseNotesFileName}"
+                println "releaseNotes         - ${extension.releaseNotes}"
+            }
+        }
+
         project.task('increaseVersion') {
 
             def major = extension.major
@@ -43,9 +64,9 @@ class PluginLoader {
 
             doLast {
                 println "CRITERIAS"
-                println "major - ${extension.criteriaMajor}"
-                println "minor - ${extension.criteriaMinor}"
-                println "patch - ${extension.criteriaPatch}"
+                println "major - ${new String(extension.criteriaMajor.getBytes("UTF-8"), "UTF-8")}"
+                println "minor - ${new String(extension.criteriaMinor.getBytes("UTF-8"), "UTF-8")}"
+                println "patch - ${new String(extension.criteriaPatch.getBytes("UTF-8"), "UTF-8")}"
 
                 println "----------------------"
 
@@ -65,6 +86,9 @@ class PluginLoader {
                 } else if (extension.releaseNotes ==~ extension.criteriaPatch) {
                     println "Patch change found!"
                     patch++
+                } else {
+                    println "No change found, release version increase won't happen!"
+                    return
                 }
 
                 println "---- versionName to $major.$minor.$patch ----"
@@ -75,7 +99,8 @@ class PluginLoader {
 
                     def file = new File(fileName)
 
-                    String fileText = """
+                    String fileText =
+"""
 # Versão $major.$minor.$patch
 ${new String(extension.releaseNotes.getBytes("UTF-8"), "UTF-8")}
 """
