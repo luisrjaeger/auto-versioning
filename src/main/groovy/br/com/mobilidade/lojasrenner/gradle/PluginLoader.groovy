@@ -2,15 +2,24 @@ package br.com.mobilidade.lojasrenner.gradle
 
 
 import org.gradle.api.Project
+import org.gradle.internal.impldep.org.apache.maven.BuildFailureException
 
 class PluginLoader {
 
     static void load(Project project) {
 
-        def extension = project.extensions.create("androidVersion", VersionExtension)
+        def extension = project.extensions.create("autoVersion", VersionExtension)
 
         Properties versionProps = new Properties()
 
+        loadProperties(project, extension, versionProps)
+
+        loadAllPropertiesTask(project, extension)
+
+        loadIncreaseVersionTask(project, extension, versionProps)
+    }
+
+    static void loadProperties(Project project, def extension, Properties versionProps) {
         def versionPropsFile = project.file('version.properties')
 
         if (versionPropsFile.canRead()) {
@@ -33,7 +42,9 @@ class PluginLoader {
 
             versionProps.store(versionPropsFile.newWriter(), null)
         }
+    }
 
+    static void loadAllPropertiesTask(Project project, def extension) {
         project.task('allReleaseVersionProperties') {
             doLast {
                 println "CURRENT VERSION"
@@ -46,15 +57,20 @@ class PluginLoader {
                 println "criteriaMajor        - ${extension.criteriaMajor}"
                 println "criteriaMinor        - ${extension.criteriaMinor}"
                 println "criteriaPatch        - ${extension.criteriaPatch}"
+                println " "
+                println "versionCycle         - ${extension.versionCycle ?: "null"}"
 
                 println "----------------------"
 
                 println "OTHER"
                 println "releaseNotesFileName - ${extension.releaseNotesFileName}"
                 println "releaseNotes         - ${extension.releaseNotes}"
+                println "throwException       - ${extension.throwException}"
             }
         }
+    }
 
+    static void loadIncreaseVersionTask(Project project, def extension, Properties versionProps) {
         project.task('increaseVersion') {
 
             def major = extension.major
@@ -63,34 +79,65 @@ class PluginLoader {
             def code = extension.code
 
             doLast {
-                println "CRITERIAS"
-                println "major - ${new String(extension.criteriaMajor.getBytes("UTF-8"), "UTF-8")}"
-                println "minor - ${new String(extension.criteriaMinor.getBytes("UTF-8"), "UTF-8")}"
-                println "patch - ${new String(extension.criteriaPatch.getBytes("UTF-8"), "UTF-8")}"
-
-                println "----------------------"
-
                 println "Increasing Version"
 
-                println "---- versionCode to ${++code} ----"
+                println "---- current versionCode ${code} ----"
 
-                if (extension.releaseNotes ==~ extension.criteriaMajor) {
-                    println "Major change found!"
-                    major++
-                    minor = 0
-                    patch = 0
-                } else if (extension.releaseNotes ==~ extension.criteriaMinor) {
-                    println "Minor change found!"
-                    minor++
-                    patch = 0
-                } else if (extension.releaseNotes ==~ extension.criteriaPatch) {
-                    println "Patch change found!"
-                    patch++
+                code++
+
+                println "---- current versionName $major.$minor.$patch ----"
+
+                println " "
+
+                if (extension.versionCycle == null) {
+                    println "RELEASE NOTES METHOD"
+                    println "CRITERIAS"
+                    println "major - ${new String(extension.criteriaMajor.getBytes("UTF-8"), "UTF-8")}"
+                    println "minor - ${new String(extension.criteriaMinor.getBytes("UTF-8"), "UTF-8")}"
+                    println "patch - ${new String(extension.criteriaPatch.getBytes("UTF-8"), "UTF-8")}"
+
+                    println "----------------------"
+
+                    if (extension.releaseNotes ==~ extension.criteriaMajor) {
+                        println "Major change found!"
+                        major++
+                        minor = 0
+                        patch = 0
+                    } else if (extension.releaseNotes ==~ extension.criteriaMinor) {
+                        println "Minor change found!"
+                        minor++
+                        patch = 0
+                    } else if (extension.releaseNotes ==~ extension.criteriaPatch) {
+                        println "Patch change found!"
+                        patch++
+                    } else {
+                        println "No change found, release version increase won't happen!"
+                        if (extension.throwException) throw new BuildFailureException("No change found")
+                        return
+                    }
                 } else {
-                    println "No change found, release version increase won't happen!"
-                    return
+                    println "RELEASE CYCLING METHOD"
+                    println "TOP VERSION - ${extension.versionCycle}"
+
+                    println "----------------------"
+
+                    if (patch < extension.versionCycle) {
+                        patch++
+                    } else if (minor < extension.versionCycle) {
+                        minor++
+                        patch = 0
+                    } else if (major < extension.versionCycle) {
+                        major++
+                        minor = 0
+                        patch = 0
+                    } else {
+                        println "Max cycle reached!"
+                        if (extension.throwException) throw new BuildFailureException("Max cycle reached")
+                        return
+                    }
                 }
 
+                println " "
                 println "---- versionName to $major.$minor.$patch ----"
 
                 if (extension.releaseNotesFileName != null) {
@@ -100,7 +147,7 @@ class PluginLoader {
                     def file = new File(fileName)
 
                     String fileText =
-"""
+                        """
 # Versão $major.$minor.$patch
 ${new String(extension.releaseNotes.getBytes("UTF-8"), "UTF-8")}
 """
@@ -111,6 +158,8 @@ ${new String(extension.releaseNotes.getBytes("UTF-8"), "UTF-8")}
                     println fileText
                 }
 
+                def versionPropsFile = project.file('version.properties')
+
                 versionProps['VERSION_NAME_MAJOR'] = major.toString()
                 versionProps['VERSION_NAME_MINOR'] = minor.toString()
                 versionProps['VERSION_NAME_PATCH'] = patch.toString()
@@ -118,22 +167,6 @@ ${new String(extension.releaseNotes.getBytes("UTF-8"), "UTF-8")}
                 versionProps.store(versionPropsFile.newWriter(), null)
             }
         }
-
-        /*
-        * A task using a project property for configuration.
-        * Reference:
-        * https://docs.gradle.org/4.6/userguide/build_environment.html#sec:gradle_configuration_properties
-        *
-        project.task('helloTarget') {
-            group = "Greeting"
-            description = "Greets the user. Target configured through properties."
-
-            doLast {
-                String target = project.findProperty("target") ?: "default-user"
-                println "Hello, $target!"
-            }
-        }
-        */
     }
 
 }

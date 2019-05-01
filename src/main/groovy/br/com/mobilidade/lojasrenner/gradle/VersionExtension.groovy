@@ -14,6 +14,10 @@ class VersionExtension {
 
     Integer code
 
+    Boolean throwException = true
+
+    Integer versionCycle
+
     String criteriaMajor = /((.|\n)*)((Grande Refatoração)|(Nova API)|(nova api)|(grande refatoração))((.|\n)*)/
 
     String criteriaMinor = /((.|\n)*)((Nova funcionalidade)|(nova funcionalidade)|(Nova Funcionalidade))((.|\n)*)/
