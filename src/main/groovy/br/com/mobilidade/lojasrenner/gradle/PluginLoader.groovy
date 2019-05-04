@@ -54,9 +54,9 @@ class PluginLoader {
                 println "----------------------"
 
                 println "CRITERIAS"
-                println "criteriaMajor        - ${extension.criteriaMajor}"
-                println "criteriaMinor        - ${extension.criteriaMinor}"
-                println "criteriaPatch        - ${extension.criteriaPatch}"
+                println "criteriaMajor        - ${extension.criteria.major}"
+                println "criteriaMinor        - ${extension.criteria.minor}"
+                println "criteriaPatch        - ${extension.criteria.patch}"
                 println " "
                 println "versionCycle         - ${extension.versionCycle ?: "null"}"
 
@@ -92,22 +92,22 @@ class PluginLoader {
                 if (extension.versionCycle == null) {
                     println "RELEASE NOTES METHOD"
                     println "CRITERIAS"
-                    println "major - ${new String(extension.criteriaMajor.getBytes("UTF-8"), "UTF-8")}"
-                    println "minor - ${new String(extension.criteriaMinor.getBytes("UTF-8"), "UTF-8")}"
-                    println "patch - ${new String(extension.criteriaPatch.getBytes("UTF-8"), "UTF-8")}"
+                    println "major - ${new String(extension.criteria.major.getBytes("UTF-8"), "UTF-8")}"
+                    println "minor - ${new String(extension.criteria.minor.getBytes("UTF-8"), "UTF-8")}"
+                    println "patch - ${new String(extension.criteria.patch.getBytes("UTF-8"), "UTF-8")}"
 
                     println "----------------------"
 
-                    if (extension.releaseNotes ==~ extension.criteriaMajor) {
+                    if (extension.releaseNotes ==~ extension.criteria.major) {
                         println "Major change found!"
                         major++
                         minor = 0
                         patch = 0
-                    } else if (extension.releaseNotes ==~ extension.criteriaMinor) {
+                    } else if (extension.releaseNotes ==~ extension.criteria.minor) {
                         println "Minor change found!"
                         minor++
                         patch = 0
-                    } else if (extension.releaseNotes ==~ extension.criteriaPatch) {
+                    } else if (extension.releaseNotes ==~ extension.criteria.patch) {
                         println "Patch change found!"
                         patch++
                     } else {
@@ -147,7 +147,7 @@ class PluginLoader {
                     def file = new File(fileName)
 
                     String fileText =
-                        """
+"""
 # Versão $major.$minor.$patch
 ${new String(extension.releaseNotes.getBytes("UTF-8"), "UTF-8")}
 """
