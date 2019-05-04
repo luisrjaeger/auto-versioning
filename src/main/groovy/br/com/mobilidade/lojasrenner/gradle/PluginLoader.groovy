@@ -1,6 +1,6 @@
 package br.com.mobilidade.lojasrenner.gradle
 
-
+import br.com.mobilidade.lojasrenner.gradle.extension.VersionExtension
 import org.gradle.api.Project
 import org.gradle.internal.impldep.org.apache.maven.BuildFailureException
 
