@@ -24,7 +24,7 @@ gradlePlugin {
     plugins {
         increaseVersionPlugin {
             id = project.pluginId
-            implementationClass = project.group + '.IncreaseAndroidVersionPlugin'
+            implementationClass = project.group + '.AutoVersioningPlugin'
         }
     }
 }

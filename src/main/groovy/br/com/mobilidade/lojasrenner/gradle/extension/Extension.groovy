@@ -1,6 +1,6 @@
 package br.com.mobilidade.lojasrenner.gradle.extension
 
-class VersionExtension {
+class Extension {
 
     String releaseNotes
 
