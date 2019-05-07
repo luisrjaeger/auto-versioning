@@ -1,6 +1,6 @@
-package br.com.mobilidade.lojasrenner.gradle.task
+package br.com.luisrjaeger.autoversioning.task
 
-import br.com.mobilidade.lojasrenner.gradle.extension.Extension
+import br.com.luisrjaeger.autoversioning.extension.Extension
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.impldep.org.apache.maven.BuildFailureException
@@ -29,8 +29,9 @@ class IncreaseVersionTask extends DefaultTask {
         println "---- current versionName $major.$minor.$patch ----"
 
         println " "
+        println "----------------------"
 
-        if (extension.versionCycle == null) {
+        if (!extension.versionCycle) {
             println "RELEASE NOTES METHOD"
             println "CRITERIAS"
             println "major - ${new String(extension.criteria.major.getBytes("UTF-8"), "UTF-8")}"
@@ -81,14 +82,14 @@ class IncreaseVersionTask extends DefaultTask {
         println " "
         println "---- versionName to $major.$minor.$patch ----"
 
-        if (extension.releaseNotesFileName != null) {
+        if (extension.releaseNotesFileName) {
             String fileName = "$project.rootProject.projectDir/${extension.releaseNotesFileName}"
             println "Generating release notes - $fileName"
 
             def file = new File(fileName)
 
             String fileText =
-                    """
+"""
 # Versão $major.$minor.$patch
 ${new String(extension.releaseNotes.getBytes("UTF-8"), "UTF-8")}
 """
@@ -97,6 +98,9 @@ ${new String(extension.releaseNotes.getBytes("UTF-8"), "UTF-8")}
             }
 
             println fileText
+
+            println " "
+            println "----------------------"
         }
 
         def versionPropsFile = project.file('version.properties')

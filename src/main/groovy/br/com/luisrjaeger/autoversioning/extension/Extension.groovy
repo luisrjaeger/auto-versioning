@@ -1,4 +1,4 @@
-package br.com.mobilidade.lojasrenner.gradle.extension
+package br.com.luisrjaeger.autoversioning.extension
 
 class Extension {
 

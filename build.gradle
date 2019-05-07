@@ -1,30 +1,41 @@
 plugins {
-    id 'groovy'
+    id 'com.gradle.plugin-publish' version '0.10.1'
     id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '0.9.10'
     id 'maven-publish'
+    id 'groovy'
 }
+
+description 'Gradle plugin to auto increase application version base on release notes or cycling increase'
+group 'br.com.luisrjaeger'
+version '1.0.0'
+ext.pluginId = 'luisrjaeger.auto-versioning'
 
 repositories {
     jcenter()
 }
 
 dependencies {
-    compile gradleApi()
+    implementation gradleApi()
+    implementation localGroovy()
 }
-
-project.description     = 'Gradle plugin to auto increase Android App version before release'
-project.group           = 'br.com.mobilidade.lojasrenner.gradle'
-project.version         = '1.2.0'
-
-project.ext.name        = 'increase-android-version'
-project.ext.pluginId    = 'increase-android-version'
 
 gradlePlugin {
     plugins {
-        increaseVersionPlugin {
+        autoVersioningPlugin {
             id = project.pluginId
-            implementationClass = project.group + '.AutoVersioningPlugin'
+            implementationClass = project.group + '.autoversioning.AutoVersioningPlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/luisrjaeger'
+    vcsUrl = 'https://github.com/luisrjaeger/auto-versioning'
+    description = project.description
+    tags = ['increate', 'version', 'versioning', 'auto']
+    plugins {
+        autoVersioningPlugin {
+            displayName = 'Auto Versioning'
         }
     }
 }
@@ -40,7 +51,7 @@ publishing {
     }
     repositories {
         maven {
-            url project.rtfUrl
+            url "http://as275.lojasrenner.com.br:8082/artifactory/plugins-release-local"
         }
     }
 }

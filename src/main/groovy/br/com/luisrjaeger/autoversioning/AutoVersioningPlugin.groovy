@@ -1,8 +1,8 @@
-package br.com.mobilidade.lojasrenner.gradle
+package br.com.luisrjaeger.autoversioning
 
-import br.com.mobilidade.lojasrenner.gradle.extension.Extension
-import br.com.mobilidade.lojasrenner.gradle.task.AutoVersioningPropertiesTask
-import br.com.mobilidade.lojasrenner.gradle.task.IncreaseVersionTask
+import br.com.luisrjaeger.autoversioning.extension.Extension
+import br.com.luisrjaeger.autoversioning.task.AutoVersioningPropertiesTask
+import br.com.luisrjaeger.autoversioning.task.IncreaseVersionTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
