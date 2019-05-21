@@ -2,13 +2,16 @@ package br.com.luisrjaeger.autoversioning.task
 
 import br.com.luisrjaeger.autoversioning.extension.Extension
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.impldep.org.apache.maven.BuildFailureException
 
 class IncreaseVersionTask extends DefaultTask {
 
+    @Input
     Extension extension
 
+    @Input
     Properties versionProps
 
     IncreaseVersionTask() { }

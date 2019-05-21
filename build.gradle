@@ -51,7 +51,7 @@ publishing {
     }
     repositories {
         maven {
-            url "http://as275.lojasrenner.com.br:8082/artifactory/plugins-release-local"
+            url mavenRepoUrl
         }
     }
 }
