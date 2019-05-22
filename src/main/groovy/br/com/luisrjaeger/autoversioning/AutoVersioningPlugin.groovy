@@ -17,14 +17,14 @@ class AutoVersioningPlugin implements Plugin<Project>{
         loadProperties(project, extension, versionProps)
 
         project.tasks.create("autoVersioningProperties", AutoVersioningPropertiesTask) { task ->
-            this.extension = extension
+            task.extension = extension
 
             description "Show all DSL properties used on Auto Versioning Plugin"
         }
 
         project.tasks.create("increaseVersion", IncreaseVersionTask) { task ->
-            this.extension = extension
-            this.versionProps = versionProps
+            task.extension = extension
+            task.versionProps = versionProps
 
             description "Increase Application version base on configured criteria"
         }
