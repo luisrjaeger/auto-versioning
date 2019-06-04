@@ -19,6 +19,7 @@ class AutoVersioningPlugin implements Plugin<Project>{
         project.tasks.create("autoVersioningProperties", AutoVersioningPropertiesTask) { task ->
             task.extension = extension
 
+            group "auto versioning"
             description "Show all DSL properties used on Auto Versioning Plugin"
         }
 
@@ -26,6 +27,7 @@ class AutoVersioningPlugin implements Plugin<Project>{
             task.extension = extension
             task.versionProps = versionProps
 
+            group "auto versioning"
             description "Increase Application version base on configured criteria"
         }
     }
