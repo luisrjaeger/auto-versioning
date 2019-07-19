@@ -33,6 +33,7 @@ class AutoVersioningPropertiesTask extends DefaultTask {
         println "throwException       - ${extension.throwException}"
         println "releaseNotesFileName - ${extension.releaseNotesFileName}"
         println "releaseNotes         - ${extension.releaseNotes}"
+        println "changeLogFileName    - ${extension.changeLogFileName}"
 
         println " "
         println "----------------------"

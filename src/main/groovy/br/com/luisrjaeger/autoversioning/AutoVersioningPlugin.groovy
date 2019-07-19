@@ -3,6 +3,7 @@ package br.com.luisrjaeger.autoversioning
 import br.com.luisrjaeger.autoversioning.extension.Extension
 import br.com.luisrjaeger.autoversioning.task.AutoVersioningPropertiesTask
 import br.com.luisrjaeger.autoversioning.task.IncreaseVersionTask
+import br.com.luisrjaeger.autoversioning.task.ReleaseNotesFromChangeLogTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -28,7 +29,14 @@ class AutoVersioningPlugin implements Plugin<Project>{
             task.versionProps = versionProps
 
             group "auto versioning"
-            description "Increase Application version base on configured criteria"
+            description "Increase application version based on configured criteria"
+        }
+
+        project.tasks.create("releaseNotesFromChangeLog", ReleaseNotesFromChangeLogTask) { task ->
+            task.extension = extension
+
+            group "auto versioning"
+            description "Generate release notes based on change log file"
         }
     }
 
@@ -38,10 +46,14 @@ class AutoVersioningPlugin implements Plugin<Project>{
         if (versionPropsFile.canRead()) {
             versionProps.load(new FileInputStream(versionPropsFile))
 
-            extension.major = versionProps['VERSION_NAME_MAJOR'].toInteger()
-            extension.minor = versionProps['VERSION_NAME_MINOR'].toInteger()
-            extension.patch = versionProps['VERSION_NAME_PATCH'].toInteger()
-            extension.code = versionProps['VERSION_CODE'].toInteger()
+            try {
+                extension.major = versionProps['VERSION_NAME_MAJOR'].toInteger()
+                extension.minor = versionProps['VERSION_NAME_MINOR'].toInteger()
+                extension.patch = versionProps['VERSION_NAME_PATCH'].toInteger()
+                extension.code = versionProps['VERSION_CODE'].toInteger()
+            } catch(Exception ex) {
+                throw new Exception("Unable to get application version!")
+            }
         } else {
             extension.major = 0
             extension.minor = 0

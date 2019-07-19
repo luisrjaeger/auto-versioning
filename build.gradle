@@ -1,5 +1,6 @@
 plugins {
     id 'com.gradle.plugin-publish' version '0.10.1'
+    id "luisrjaeger.auto-versioning" version "1.0.10"
     id 'java-gradle-plugin'
     id 'maven-publish'
     id 'groovy'
@@ -7,8 +8,12 @@ plugins {
 
 description 'Gradle plugin to auto increase application version base on release notes or cycling increase'
 group 'br.com.luisrjaeger'
-version '1.0.6'
 ext.pluginId = 'luisrjaeger.auto-versioning'
+
+autoVersion {
+    versionCycle = 100
+    releaseNotesFileName = null
+}
 
 repositories {
     jcenter()
@@ -29,6 +34,7 @@ gradlePlugin {
 }
 
 pluginBundle {
+    version = autoVersion.versionName()
     website = 'https://github.com/luisrjaeger'
     vcsUrl = 'https://github.com/luisrjaeger/auto-versioning'
     description = project.description

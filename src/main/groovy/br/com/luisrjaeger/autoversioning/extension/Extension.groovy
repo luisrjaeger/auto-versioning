@@ -6,6 +6,8 @@ class Extension {
 
     String releaseNotesFileName = 'RELEASE_NOTES.md'
 
+    String changeLogFileName = 'CHANGE_LOG.md'
+
     Integer major
 
     Integer minor
