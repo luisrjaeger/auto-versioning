@@ -5,28 +5,33 @@ import br.com.luisrjaeger.autoversioning.helper.FileHelper
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-class ReleaseNotesFromChangeLogTask extends DefaultTask {
+class LatestNotesFromChangeLogTask extends DefaultTask {
 
     private static final VERSION_TITLE = "# Versão"
     private static final RELEASE_TITLE = VERSION_TITLE + " Release"
+
+    private static final ERROR_LATEST_NOTES = "Latest notes not defined!"
+    private static final ERROR_CHANGE_LOG = "Change log not defined!"
+    private static final ERROR_CHANGE_LOG_EMPTY = "Change log is empty!"
+    private static final ERROR_CHANGE_LOG_NOT_FOUND = "Change log file not found!"
 
     Extension extension
 
     String changeLog = ""
 
-    ReleaseNotesFromChangeLogTask() { }
+    LatestNotesFromChangeLogTask() { }
 
     @TaskAction
     def buildReleaseNotes() {
-        if (!extension.releaseNotesFileName) {
-            if (extension.throwException) throw new Exception("Release notes not defined!")
-            println "Release notes not defined!"
+        if (!extension.latestNotesFileName) {
+            if (extension.throwException) throw new Exception(ERROR_LATEST_NOTES)
+            println ERROR_LATEST_NOTES
             return
         }
 
         if (!extension.changeLogFileName) {
-            if (extension.throwException) throw new Exception("Change log not defined!")
-            println "Change log not defined!"
+            if (extension.throwException) throw new Exception(ERROR_CHANGE_LOG)
+            println ERROR_CHANGE_LOG
             return
         }
 
@@ -36,8 +41,8 @@ class ReleaseNotesFromChangeLogTask extends DefaultTask {
         readChangeLog()
 
         if (changeLog.isEmpty()) {
-            if (extension.throwException) throw new Exception("Change log is empty!")
-            println "Change log is empty!"
+            if (extension.throwException) throw new Exception(ERROR_CHANGE_LOG_EMPTY)
+            println ERROR_CHANGE_LOG_EMPTY
             return
         }
 
@@ -54,7 +59,7 @@ class ReleaseNotesFromChangeLogTask extends DefaultTask {
         println ""
 
         if (!file.canRead()) {
-            throw new Exception("Change log file not found")
+            throw new Exception(ERROR_CHANGE_LOG_NOT_FOUND)
         }
 
         List<String> lines = file.readLines()
@@ -70,18 +75,18 @@ class ReleaseNotesFromChangeLogTask extends DefaultTask {
     }
 
     private createReleaseNoteFile() {
-        String fileName = "$project.rootProject.projectDir/${extension.releaseNotesFileName}"
-        println "Generating release notes - $fileName"
-        FileHelper.createFile(fileName, buildReleaseText(), false)
+        String fileName = "$project.rootProject.projectDir/${extension.latestNotesFileName}"
+        println "Generating final release notes - $fileName"
+        FileHelper.createFile(fileName, buildLatestText(), false)
     }
 
     private createChangeLogFile() {
         String fileName = "$project.rootProject.projectDir/${extension.changeLogFileName}"
         println "Generating change log - $fileName"
-        FileHelper.createFile(fileName, buildReleaseText(), true)
+        FileHelper.createFile(fileName, buildLatestText(), true)
     }
 
-    private String buildReleaseText() {
+    private String buildLatestText() {
         return """
 # Versão Release $extension.major.$extension.minor.$extension.patch
 

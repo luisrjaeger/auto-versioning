@@ -34,6 +34,7 @@ class AutoVersioningPropertiesTask extends DefaultTask {
         println "releaseNotesFileName - ${extension.releaseNotesFileName}"
         println "releaseNotes         - ${extension.releaseNotes}"
         println "changeLogFileName    - ${extension.changeLogFileName}"
+        println "latestNotesFileName  - ${extension.latestNotesFileName}"
 
         println " "
         println "----------------------"

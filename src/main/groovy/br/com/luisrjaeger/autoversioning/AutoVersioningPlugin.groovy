@@ -3,7 +3,7 @@ package br.com.luisrjaeger.autoversioning
 import br.com.luisrjaeger.autoversioning.extension.Extension
 import br.com.luisrjaeger.autoversioning.task.AutoVersioningPropertiesTask
 import br.com.luisrjaeger.autoversioning.task.IncreaseVersionTask
-import br.com.luisrjaeger.autoversioning.task.ReleaseNotesFromChangeLogTask
+import br.com.luisrjaeger.autoversioning.task.LatestNotesFromChangeLogTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -32,11 +32,11 @@ class AutoVersioningPlugin implements Plugin<Project>{
             description "Increase application version based on configured criteria"
         }
 
-        project.tasks.create("releaseNotesFromChangeLog", ReleaseNotesFromChangeLogTask) { task ->
+        project.tasks.create("latestNotesFromChangeLog", LatestNotesFromChangeLogTask) { task ->
             task.extension = extension
 
             group "auto versioning"
-            description "Generate release notes based on change log file"
+            description "Generate latest release notes based on change log file"
         }
     }
 
